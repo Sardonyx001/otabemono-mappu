@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>ホーム</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+        }
+        p {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .food-form {
+            text-align: center;
+        }
+
+        .food-input {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .submit-button {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        .logout-form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .form-group {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        /* Responsive styles for smaller screens (mobile devices) */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px; 
+            }                
+            .container {
+                max-width: 95%; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>ホーム</h1>
+        <!-- <p th:if="${isAuthenticated}">You are currently logged in.</p> -->
+        <p th:if="${!isAuthenticated}">ログインまたは登録をしてください</p>
+
+        <div class="welcome-message" th:if="${isAuthenticated}">
+            こんにちは、 "<span th:text="${username}"></span>"さん！
+        </div>
+
+        <div class="food-form" th:if="${isAuthenticated}" >
+            <p>お好みの食べ物を記入してください：</p>
+            <form th:action="@{/result}" method="post">
+                <input type="text" name="food" class="food-input" placeholder="好きな食べ物"/>
+                <input type="submit" value="🔍" class="submit-button" />
+            </form>
+        </div>
+
+        <div class="form-group"th:if="${!isAuthenticated}">
+            <a href="/login">
+                <input type="submit" value="ログインへ" />
+            </a>
+        </div>     
+
+        <div class="logout-form" th:if="${isAuthenticated}">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="ログアウト" class="submit-button" />
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

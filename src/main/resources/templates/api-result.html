@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>API Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        .home-button {
+            display: inline-block;
+            width: 100px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .home-button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns of equal width */
+            gap: 20px; /* Gap between columns */
+            padding: 20px; /* Padding for the container */
+            background-color: #f0f0f0; /* Background color for the container */
+        }
+        
+        .column {
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #fff; /* Background color for each column */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Box shadow for each column */
+            border-radius: 5px; /* Rounded corners for each column */
+        }
+        
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script th:inline="javascript" type="text/javascript">
+        google.charts.load('current', {
+            'packages':['geochart'],
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
+        var jsonData = [# th:text="${jsonData}" /];
+        var parsedJsonIntoArray = JSON.parse(jsonData);
+        var regionValueArray = [];
+        for(var region in parsedJsonIntoArray){
+            regionValueArray.push([
+                region.replace("市","").replace("都区部",""), 
+                parseFloat(parsedJsonIntoArray[region])]);
+        }
+        console.log(regionValueArray);
+        function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+            ['都道府県', '消費量']
+        ].concat(regionValueArray));
+        
+        var options = {
+            region: "JP",
+            resolution: "provinces",
+            colorAxis: {colors: ['green','yellow' ,'red']}};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+        }
+    </script>
+</head>
+<body>
+    <h1>API json Data</h1>
+    <div class="grid-container">
+        <div class="column">
+            <table>
+                <p th:text="${jsonData}"  style="white-space: pre"></p>
+            </table>
+            <table>
+                <p th:text="${jsonData2}"  style="white-space: pre"></p>
+            </table>
+        </div>
+        <div class="column">
+            <div id="regions_div" style="height: 500px;"></div>
+        </div>
+    </div>
+
+</body>
+</html>

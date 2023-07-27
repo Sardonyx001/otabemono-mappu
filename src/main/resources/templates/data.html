@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CSV Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        .home-button {
+            display: inline-block;
+            width: 100px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .home-button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>CSV Data</h1>
+    <div class="button-container">
+        <a class="home-button" href="/home">ホームへ</a>
+        <a class="home-button" href="/home">Tranform Data</a>
+    </div>
+    <table>
+        <tr>
+            <th th:each="header : ${csvData[0]}" th:text="${header}"></th>
+        </tr>
+        <tr th:each="row : ${csvData}" th:if="${rowStat.index > 0 and !#lists.isEmpty(row)}">
+            <td th:each="cell : ${row}" th:text="${cell}"></td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>登録完了</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .container p {
+            margin-bottom: 10px;
+        }
+
+        .container strong {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+        }
+        .home-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .home-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>登録完了</h1>
+        <p>登録が完了しました！</p>
+
+        <h2>登録済みユーザー情報:</h2>
+        <p>
+            <strong>氏名:</strong> <span th:text="${user.fullName}"></span><br>
+            <strong>氏名（カタカナ）:</strong> <span th:text="${user.fullNameKatakana}"></span><br>
+            <strong>氏名（ローマ字）:</strong> <span th:text="${user.fullNameRomaji}"></span><br>
+            <strong>性別:</strong> <span th:text="${user.gender}"></span><br>
+            <strong>携帯電話:</strong> <span th:text="${user.phone}"></span><br>
+            <strong>メールアドレス:</strong> <span th:text="${user.email}"></span><br>
+            <strong>郵便番号:</strong> <span th:text="${user.postalCode}"></span><br>
+            <strong>住所:</strong> <span th:text="${user.address}"></span><br>
+            <strong>生年月日:</strong> <span th:text="${user.dateOfBirth}"></span><br>
+            <strong>出身地:</strong> <span th:text="${user.birthPlace}"></span>
+        </p>
+        <a class="home-button" href="/login">ログインへ</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+	<head>
+		<title>コンテンツ</title>
+		<style>
+			.home-button {
+				display: block;
+				width: 100px;
+				margin: 20px auto;
+				padding: 10px;
+				text-align: center;
+				background-color: #4caf50;
+				color: #fff;
+				text-decoration: none;
+				border-radius: 5px;
+			}
+			.home-button:hover {
+				background-color: #45a049;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>コンテンツ</h1>
+        <div>
+            お好みの食べ物は "<span th:text="${food}"></span>" です。
+			<img th:src="@{/{image}.gif(image=${food})}" alt="Animated GIF">
+        </div>
+		<a class="home-button" href="/home">ホームへ</a>
+	</body>
+</html>

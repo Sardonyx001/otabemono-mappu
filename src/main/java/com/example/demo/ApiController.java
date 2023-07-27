@@ -42,7 +42,7 @@ public class ApiController {
             // Also make the fooQueryToCodeMap data fetching and 
             // processing happen AFTER the user first lands on the home page
             HashMap<String, String> foodQueryToCodeMap = apiDataProcessor.getfoodQueryToCodeMap(jsonMetaDataResponse);
-            String _foodQueryCode = foodQueryToCodeMap.get(_foodQuery.replaceAll("[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",""));
+            String _foodQueryCode = foodQueryToCodeMap.getOrDefault(_foodQuery.replaceAll("[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",""),foodQueryCode);
             System.out.println("foodCode: {"+_foodQueryCode+"}");
 
             URL apiGetStatDataUrl = api.makeUrl(_foodQueryCode);

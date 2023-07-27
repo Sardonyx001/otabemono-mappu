@@ -28,7 +28,14 @@ public class ApiDataProcessor {
                 classObject.getAsJsonArray("CLASS")
                 .forEach((JsonElement consumableCodeClass) -> {
                     // Check if the consumable is in the food range
-                    // TODO There has to be better way to pass the range
+                    // TODO Optimize Range Passing and Handle Consumable Category Data Retrieval from API
+                    // There has to be better way to pass the range
+                    // Getting only the food items from the comsumables since 
+                    // the api doesn't specify a specific category for this but 
+                    // returns all the consumable even when using the cdCat01From 
+                    // and cdCat01To range variable to specifiy comsumable category 
+                    // ranges (i.e. consumable item codes aren't ordered even though 
+                    // they appear they are)
                     if(consumableCodeClass
                         .getAsJsonObject()
                         .get("@code")
@@ -45,7 +52,8 @@ public class ApiDataProcessor {
                                     .getAsJsonObject()
                                     .get("@name")
                                     .getAsString()
-                                    // TODO Probably use a variable to store this regex somewhere
+                                    // TODO Create Reusable Variable for Japanese Word Regex Matching
+                                    // Probably use a variable to store this regex somewhere
                                     // This regex matches anything that isn't a Japanese word 
                                     // (It only keeps single Japanese words, no spaces)
                                     .replaceAll("[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",""),
@@ -120,11 +128,9 @@ public class ApiDataProcessor {
         return areaNameToDataValueMap;
     }
 
-    /*
-        TODO
-        ? このように実際のAPI応答と比較せずに利用するのが危険かと
-        ? 今度ちゃんとe-stat.go.jpのメタデータ情報APIから、地域区別の市を取得すべき。
-    */
+    // TODO Improve Safety by Comparing with Actual API Responses and Fetching City Data from e-stat.go.jp
+    //   ? このように実際のAPI応答と比較せずに利用するのが危険かと
+    //  ? 今度ちゃんとe-stat.go.jpのメタデータ情報APIから、地域区別の市を取得すべき。
     private HashMap<String, String> getCityToPrefectureMapping() {
         HashMap<String, String> cityToPrefectureMapping = new HashMap<>();
         cityToPrefectureMapping.put("金沢市", "石川");

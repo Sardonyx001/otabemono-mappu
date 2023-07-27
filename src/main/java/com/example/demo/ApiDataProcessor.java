@@ -45,8 +45,10 @@ public class ApiDataProcessor {
                                     .getAsJsonObject()
                                     .get("@name")
                                     .getAsString()
-                                    // TODO Remove anything but japanese text from the data name
-                                    .replaceAll("[0-9a-zA-Z]*[0-9a-zA-Z.]+[0-9a-zA-Z-| ]+[0-9a-zA-Z]*",""),
+                                    // TODO Probably use a variable to store this regex somewhere
+                                    // This regex matches anything that isn't a Japanese word 
+                                    // (It only keeps single Japanese words, no spaces)
+                                    .replaceAll("[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",""),
                                 consumableCodeClass
                                     .getAsJsonObject()
                                     .get("@code")

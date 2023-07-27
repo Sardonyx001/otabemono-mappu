@@ -41,7 +41,7 @@ public class AppViewController{
         model.addAttribute("isAuthenticated",isAuthenticated);
         return "home";
     }
-    
+    // TODO Should probably move query results to its own controller
     @GetMapping("/result")
     String resultGet(
         @RequestParam ("food") String food,
@@ -60,6 +60,6 @@ public class AppViewController{
     ){
         session.setAttribute("food", food);
         model.addAttribute("food", food);
-        return "result";
+        return "redirect:/apidata";
     }
 }

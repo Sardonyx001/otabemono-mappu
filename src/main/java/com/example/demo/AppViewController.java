@@ -1,10 +1,14 @@
 package com.example.demo;
 
 import org.springframework.ui.ModelMap;
+
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 
 import jakarta.servlet.http.HttpSession;
 
@@ -27,7 +31,7 @@ public class AppViewController{
     String home(
         HttpSession session,
         ModelMap model
-    ){
+    ) throws Exception{
         // User user = (User)session.getAttribute("user");
         String username = (String)session.getAttribute("username");
         model.addAttribute("username",username);
@@ -39,6 +43,14 @@ public class AppViewController{
         }
         
         model.addAttribute("isAuthenticated",isAuthenticated);
+
+        ApiController apiController = new ApiController();
+        List<String> foodQueryList = apiController.getFoodQueryListAsStringList();
+        System.out.println(foodQueryList);
+
+        model.addAttribute("foodQueryList",foodQueryList);
+        model.addAttribute("inputValue", ""); 
+
         return "home";
     }
     // TODO Should probably move query results to its own controller

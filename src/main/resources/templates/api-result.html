@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>API Data</title>
     <style>
+        body { margin: 0; }
+        * {
+            box-sizing: border-box;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -35,21 +41,41 @@
         .button-container {
             text-align: center;
         }
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Two columns of equal width */
-            gap: 20px; /* Gap between columns */
+
+        .gridwrapper {
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            grid-gap: 20px; /* Gap between columns */
             padding: 20px; /* Padding for the container */
             background-color: #f0f0f0; /* Background color for the container */
+            height: 100vh;
         }
         
-        .column {
+        .gridcontent {
             border: 1px solid #ccc;
-            padding: 20px;
             background-color: #fff; /* Background color for each column */
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Box shadow for each column */
             border-radius: 5px; /* Rounded corners for each column */
+            width: 8.33%;
+            margin: 0;
+            border-right: 1px solid grey;
+            height: 100%;
+            float: left;
         }
+
+        .col-1 {width: 8.33%;}
+        .col-2 {width: 16.66%;}
+        .col-3 {width: 25%;}
+        .col-4 {width: 33.33%;}
+        .col-5 {width: 41.66%;}
+        .col-6 {width: 50%;}
+        .col-7 {width: 58.33%;}
+        .col-8 {width: 66.66%;}
+        .col-9 {width: 75%;}
+        .col-10 {width: 83.33%;}
+        .col-11 {width: 91.66%;}
+        .col-12 {width: 100%;}
         
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -75,7 +101,20 @@
         var options = {
             region: "JP",
             resolution: "provinces",
-            colorAxis: {colors: ['green','yellow' ,'red']}};
+            colorAxis: { colors: [
+                '#313695',
+                '#4575b4',
+                '#74add1',
+                '#abd9e9',
+                '#e0f3f8',
+                '#ffffbf',
+                '#fee090',
+                '#fdae61',
+                '#f46d43',
+                '#d73027',
+                '#a50026']
+            }
+        };
 
         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 
@@ -84,18 +123,14 @@
     </script>
 </head>
 <body>
-    <h1>API json Data</h1>
-    <div class="grid-container">
-        <div class="column">
-            <table>
-                <p th:text="${jsonData}"  style="white-space: pre"></p>
-            </table>
-            <table>
-                <p th:text="${jsonData2}"  style="white-space: pre"></p>
-            </table>
+    <div class="gridwrapper">
+        <div class="gridcontent col-4" style="padding: 15px;">
+            <div>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aspernatur ullam eum aliquam ut minima dolorem quo molestias dolorum adipisci ad ducimus rem nobis, repudiandae nulla praesentium sequi nam voluptatum natus?
+            </div>
         </div>
-        <div class="column">
-            <div id="regions_div" style="height: 500px;"></div>
+        <div class="gridcontent col-8">
+            <div id="regions_div" style="overflow:scroll;height: 100%;width:100%"></div>
         </div>
     </div>
 

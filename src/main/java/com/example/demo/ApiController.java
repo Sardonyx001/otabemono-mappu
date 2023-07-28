@@ -1,7 +1,9 @@
 package com.example.demo;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,25 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ApiController {
     
+    public List<String> getFoodQueryListAsStringList() throws Exception{
+        ApiManager api = new ApiManager();
+        URL apiGetMetaInfoUrl = api.makeUrlFromSomeParams(
+                api.getMetaInfoApiBaseUrl(),
+                api.getAppId(),
+                api.getStatsDataId()
+        );
+
+        // JSON型でAPIへのGETリクエストのレスポンスを取得する
+        // データセットのメタ情報
+        String jsonMetaDataResponse = api.makeApiRequest(apiGetMetaInfoUrl);
+        // データセットの実際データ
+        ApiDataProcessor apiDataProcessor = new ApiDataProcessor();
+
+        HashMap<String, String> foodQueryToCodeMap = apiDataProcessor.getfoodQueryToCodeMap(jsonMetaDataResponse);
+        
+        return new ArrayList<>(foodQueryToCodeMap.keySet());
+    }
+
     @GetMapping("/apidata")
     public String getApiData(Model model, HttpSession session) throws Exception{
         ApiManager api = new ApiManager();

@@ -45,6 +45,7 @@
 
         .food-form {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .food-input {
@@ -70,8 +71,7 @@
             background-color: #45a049;
         }
         .logout-form {
-            text-align: center;
-            margin-top: 20px;
+            text-align: right;
         }
         .form-group {
             text-align: center;
@@ -112,8 +112,17 @@
 </head>
 <body>
     <div class="container">
-
-        <h1>ホーム</h1>
+        <div class="row">
+            <div class="col left-text"></div>
+            <div class="col right-text" style="width: 75%;">
+                <h1>ホーム</h1>
+            </div>
+            <div class="col right-text logout-form" style="width: 25%;" th:if="${isAuthenticated}">
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="ログアウト" class="submit-button" />
+                </form>
+            </div>
+        </div>
         <!-- <p th:if="${isAuthenticated}">You are currently logged in.</p> -->
         <p th:if="${!isAuthenticated}">ログインまたは登録をしてください</p>
 
@@ -143,12 +152,6 @@
                 <input type="submit" value="ログインへ" />
             </a>
         </div>     
-
-        <div class="logout-form" th:if="${isAuthenticated}">
-            <form th:action="@{/logout}" method="post">
-                <input type="submit" value="ログアウト" class="submit-button" />
-            </form>
-        </div>
     </div>
     <script>
         function fillInputForm(value) {

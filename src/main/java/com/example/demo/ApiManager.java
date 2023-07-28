@@ -17,7 +17,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApiManager {
-	
+	// ? Maybe make a super class for the Api and 
+	// ? take 2 child classes for the statDataApi and the metaInfoApi
 	private String statDataApiBaseUrl			= "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData";
 	private String metaInfoApiBaseUrl			= "https://api.e-stat.go.jp/rest/3.0/app/json/getMetaInfo";
 	
@@ -25,7 +26,8 @@ public class ApiManager {
 	private String statsDataId			= "0003348235"; 
 	private String cdCat01				= "010110001"; 
 
-	// TODO There has to be a better way than setting these values
+	// ? There has to be a better way than hardcoding these values
+	// ? Maybe abstract them away to an Api model class.
 	private String cdCat01From 			= "010110001"; // 食料カテゴリーの初め
 	private String cdCat01To 			= "011100070"; // 食料カテゴリーの終わり
 	private String cdCat02				= "03"; 

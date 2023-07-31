@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import lombok.Getter;
+import lombok.Setter;
 
 
 public class ApiDataProcessor {
@@ -24,6 +25,9 @@ public class ApiDataProcessor {
     @Getter
     public String jpTextOnlyRegex = "[^\\u3041-\\u3093\\u30A1-\\u30F4\\u30FC\\u4E00-\\u9FA0]+";
 
+    @Setter
+    @Getter
+    private ConsumableCategory consumableCategoryInfo = new ConsumableCategory();
 
     public HashMap<String, String> getfoodQueryToCodeMap(String jsonMetadataResponse) {
 
@@ -78,7 +82,6 @@ public class ApiDataProcessor {
                 });
             }
         });
-
         return consumableCategoryList;
     }
 
@@ -110,7 +113,7 @@ public class ApiDataProcessor {
     
 
     public HashMap<String, String> getAreaNameToDataValueMap(String jsonResponse) throws Exception {
-        
+        Gson gson = new Gson();
         HashMap<String, String> areaNameToDataValueMap = new HashMap<String,String>();
         try {
             // JSONデータを操作するためオブジェクトへ変換する
@@ -120,7 +123,15 @@ public class ApiDataProcessor {
             
             JsonArray statDataValueArray    = getStatDataValueArray  (responseRootObject);
             JsonArray classObjectInfoArray  = getClassObjectInfoArray(responseRootObject);
-            
+
+            classObjectInfoArray.forEach((JsonElement _classObject) -> {
+                JsonObject classObject = _classObject.getAsJsonObject();
+                if(classObject.get("id").getAsString().equals("cat01")){
+                    JsonObject consumableCategoryClass = classObject.get("CLASS").getAsJsonObject();
+                    this.setConsumableCategoryInfo(gson.fromJson(consumableCategoryClass,ConsumableCategory.class));
+                }
+            });
+
             JsonArray areaClassInfoArray = getAreaClassInfoFrom(classObjectInfoArray);
             HashMap<String, String> areaCodeToNamesMap = constructAreaCodeToNamesMapFrom(areaClassInfoArray);
 

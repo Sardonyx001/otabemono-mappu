@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>API Data</title>
+    <title>食品マップ</title>
     <style>
         body { margin: 0; }
         * {
@@ -20,41 +20,36 @@
             background-color: #f2f2f2;
         }
 
-        .gridwrapper {
-            display: flex;
-            overflow: hidden;
-            position: relative;
+        .container {
             grid-gap: 20px; /* Gap between columns */
-            padding: 20px; /* Padding for the container */
+            padding: 10px; /* Padding for the container */
             background-color: #f0f0f0; /* Background color for the container */
             height: 100vh;
+            width: 100%;
         }
         
-        .gridcontent {
+        .row {
             border: 1px solid #ccc;
             background-color: #fff; /* Background color for each column */
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Box shadow for each column */
             border-radius: 5px; /* Rounded corners for each column */
-            width: 8.33%;
-            margin: 0;
             border-right: 1px solid grey;
-            height: 100%;
-            float: left;
         }
 
-        .col-1 {width: 8.33%;}
-        .col-2 {width: 16.66%;}
-        .col-3 {width: 25%;}
-        .col-4 {width: 33.33%;}
-        .col-5 {width: 41.66%;}
-        .col-6 {width: 50%;}
-        .col-7 {width: 58.33%;}
-        .col-8 {width: 66.66%;}
-        .col-9 {width: 75%;}
-        .col-10 {width: 83.33%;}
-        .col-11 {width: 91.66%;}
-        .col-12 {width: 100%;}
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.3);
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
         
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script th:inline="javascript" type="text/javascript">
@@ -101,16 +96,29 @@
     </script>
 </head>
 <body>
-    <div class="gridwrapper">
-        <div class="gridcontent col-4" style="padding: 15px;">
+    <div class="loading-spinner"></div>
+    <div class="container">
+        <div class="row" style="padding: 15px;">
             <div>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aspernatur ullam eum aliquam ut minima dolorem quo molestias dolorum adipisci ad ducimus rem nobis, repudiandae nulla praesentium sequi nam voluptatum natus?
+                <h2 >
+                    2022 都道府県別の1世帯当たり年間の<b th:text="${foodQuery}"></b>消費量分布(単位：<b th:text="${unit}"></b>)     
+                </h2>
+                <p>
+                    データ出典：<a href="https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200561&tstat=000000330001&cycle=7&year=20210&month=0&tclass1=000000330001&tclass2=000000330004&tclass3=000000330006&result_back=1&cycle_facet=tclass1%3Atclass2%3Atclass3%3Acycle&tclass4val=0">
+                        家計調査　家計収支編　二人以上の世帯</a> 2023
+                </p>
             </div>
         </div>
-        <div class="gridcontent col-8">
-            <div id="regions_div" style="overflow:scroll;height: 100%;width:100%"></div>
+        <div class="row">
+            <div id="regions_div" style="flex:content;"></div>
         </div>
     </div>
-
+    <script>
+        window.onload = function() {
+            // Hide the loading spinner once the page is fully loaded
+            var loadingSpinner = document.querySelector('.loading-spinner');
+            loadingSpinner.style.display = 'none';
+        };
+    </script>
 </body>
 </html>

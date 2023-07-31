@@ -76,7 +76,12 @@ public class ApiController {
             String jsonStatDataResponse = api.makeApiRequest(apiGetStatDataUrl).replaceAll("@", "");        
             HashMap<String, String> areaNameToDataValueMap = apiDataProcessor.getAreaNameToDataValueMap(jsonStatDataResponse); 
 
+            ConsumableCategory foodItemInfo = apiDataProcessor.getConsumableCategoryInfo();
+
             model.addAttribute("jsonData", gson.toJson(areaNameToDataValueMap));
+            model.addAttribute("foodQuery", foodItemInfo.getName() );
+            model.addAttribute("unit", foodItemInfo.getUnit());
+
         
         } catch (Exception e) {
             e.printStackTrace();

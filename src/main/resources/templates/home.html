@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>ホーム</title>
+    <title>食品マップ</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -31,9 +31,9 @@
 
         .container {
             max-width: 80%;
-            margin: 40px auto;
+            margin: 20px auto;
             background-color: #fff;
-            padding: 20px;
+            padding: 10px;
             border-radius: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
@@ -57,7 +57,6 @@
         }
 
         .submit-button {
-            display: inline-block;
             padding: 8px 20px;
             background-color: #4caf50;
             color: #fff;
@@ -81,7 +80,8 @@
         .form-group input[type="submit"] {
             background-color: #4caf50;
             color: #fff;
-            padding: 10px 20px;
+            margin-top: 10px;
+            padding: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -91,15 +91,14 @@
             background-color: #45a049;
         }
         .column-container {
-            column-count: 8; /* Adjust the number of columns as needed */
+            column-count: auto;
+            column-width: 8rem; 
         }
 
-        /* Optional: add some spacing between the items */
         .column-container span {
             display: block;
             margin-bottom: 5px;
         }
-        /* Responsive styles for smaller screens (mobile devices) */
         @media (max-width: 768px) {
             body {
                 font-size: 16px; 
@@ -113,32 +112,33 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col left-text"></div>
-            <div class="col right-text" style="width: 75%;">
-                <h1>ホーム</h1>
-            </div>
-            <div class="col right-text logout-form" style="width: 25%;" th:if="${isAuthenticated}">
+            <div class="col right-text logout-form" th:if="${isAuthenticated}">
                 <form th:action="@{/logout}" method="post">
                     <input type="submit" value="ログアウト" class="submit-button" />
                 </form>
             </div>
         </div>
-        <!-- <p th:if="${isAuthenticated}">You are currently logged in.</p> -->
-        <p th:if="${!isAuthenticated}">ログインまたは登録をしてください</p>
-
+        <div class="row">
+                <div class="col center-text" style="margin:auto;">
+                    <h1>ホーム</h1>
+                </div>
+        </div>
+        <div class="row">
+            <p th:if="${!isAuthenticated}" style="margin:auto">ログインまたは登録をしてください</p>
+        </div>
         <div class="welcome-message" th:if="${isAuthenticated}">
             こんにちは、 "<span th:text="${username}"></span>"さん！
         </div>
 
         <div class="food-form" th:if="${isAuthenticated}" >
-            <p>可視化したい食べ物または飲み物を記入、もしくは選択してください：</p>
+            <p>可視化したい食品を記入、もしくは選択してください：</p>
             <form th:action="@{/result}" method="post">
                 <input type="text" id="textInput" name="food" class="food-input" placeholder="好きな食べ物"/>
-                <input type="submit" value="🔍" class="submit-button" />
+                <input type="submit" value="🔍" class="submit-button"/>
             </form>
         </div>
 
-        <div class="column-container" th:if="${isAuthenticated}">
+        <div class="column-container " th:if="${isAuthenticated}">
             <!-- Iterate over the list of strings and display each item --> 
             <span id="inputQueryBtn"
                     th:each="item : ${foodQueryList}" 
@@ -149,10 +149,11 @@
 
         <div class="form-group" th:if="${!isAuthenticated}">
             <a href="/login">
-                <input type="submit" value="ログインへ" />
+                <input type="submit" value="ログイン・登録へ" />
             </a>
         </div>     
     </div>
+
     <script>
         function fillInputForm(value) {
             var inputElement = document.getElementById('textInput');

@@ -2,19 +2,16 @@ package com.example.demo;
 
 import org.springframework.ui.ModelMap;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class AppViewController{
-    private final SharedStateService sharedStateService = new SharedStateService();
+public class AppController{
+    private final SharedStateService sss = new SharedStateService();
 
     private static boolean inputError = false;
 
@@ -46,10 +43,10 @@ public class AppViewController{
         model.addAttribute("isAuthenticated",isAuthenticated);
 
         ApiController apiController = new ApiController();
-        sharedStateService.setFoodQueryList(apiController.getFoodQueryListAsStringList());
+        sss.setFoodQueryList(apiController.getFoodQueryListAsStringList());
 
         model.addAttribute("inputValue", ""); 
-        model.addAttribute("foodQueryList",sharedStateService.getFoodQueryList());
+        model.addAttribute("foodQueryList",sss.getFoodQueryList());
         model.addAttribute("inputError", inputError); 
 
         return "home";
@@ -61,7 +58,7 @@ public class AppViewController{
         HttpSession session,
         ModelMap model
     ) throws Exception{
-        if(sharedStateService.getFoodQueryList().contains(food)){
+        if(sss.getFoodQueryList().contains(food)){
             inputError = false;
             model.addAttribute("food", food);
             session.setAttribute("food", food);

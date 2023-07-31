@@ -7,10 +7,18 @@ import org.springframework.stereotype.Service;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-
+@Setter
+@Getter
 @Service
 @Scope("singleton")
 public class SharedStateService {
-    @Setter @Getter private List<String> foodQueryList;
+
+    private List<String> foodQueryList;
+
+    private boolean homeQueryInputError = false;
+
+    
 }

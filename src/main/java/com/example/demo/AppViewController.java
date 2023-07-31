@@ -14,9 +14,10 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AppViewController{
-    /**
-     * @return Redirects root directly to /home
-     */
+    private final SharedStateService sharedStateService = new SharedStateService();
+
+    private static boolean inputError = false;
+
     @GetMapping("/")
     String indexGet(){
         return "redirect:/home";
@@ -28,7 +29,7 @@ public class AppViewController{
     }
 
     @GetMapping("/home")
-    String home(
+    public String home(
         HttpSession session,
         ModelMap model
     ) throws Exception{
@@ -45,33 +46,31 @@ public class AppViewController{
         model.addAttribute("isAuthenticated",isAuthenticated);
 
         ApiController apiController = new ApiController();
-        List<String> foodQueryList = apiController.getFoodQueryListAsStringList();
-        System.out.println(foodQueryList);
+        sharedStateService.setFoodQueryList(apiController.getFoodQueryListAsStringList());
 
-        model.addAttribute("foodQueryList",foodQueryList);
         model.addAttribute("inputValue", ""); 
+        model.addAttribute("foodQueryList",sharedStateService.getFoodQueryList());
+        model.addAttribute("inputError", inputError); 
 
         return "home";
     }
-    // TODO Should probably move query results to its own controller
-    @GetMapping("/result")
-    String resultGet(
-        @RequestParam ("food") String food,
-        HttpSession session,
-        ModelMap model
-    ){
-        model.addAttribute("food", food);
-        return "result";
-    }
 
-    @PostMapping("/result")
-    String resultPost(
+    @PostMapping("/home")
+    public String resultPost(
         @RequestParam ("food") String food,
         HttpSession session,
         ModelMap model
-    ){
-        session.setAttribute("food", food);
-        model.addAttribute("food", food);
-        return "redirect:/apidata";
+    ) throws Exception{
+        if(sharedStateService.getFoodQueryList().contains(food)){
+            inputError = false;
+            model.addAttribute("food", food);
+            session.setAttribute("food", food);
+            return "redirect:/apidata";
+        }else{
+            inputError = true;
+            session.setAttribute("inputError", inputError);
+            model.addAttribute("isAuthenticated", true);
+            return "redirect:/home";
+        }
     }
 }

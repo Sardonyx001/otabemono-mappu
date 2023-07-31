@@ -99,6 +99,9 @@
             display: block;
             margin-bottom: 5px;
         }
+        .error {
+            color: red;
+        }
         @media (max-width: 768px) {
             body {
                 font-size: 16px; 
@@ -132,9 +135,10 @@
 
         <div class="food-form" th:if="${isAuthenticated}" >
             <p>可視化したい食品を記入、もしくは選択してください：</p>
-            <form th:action="@{/result}" method="post">
+            <form th:action="@{/home}" method="post">
                 <input type="text" id="textInput" name="food" class="food-input" placeholder="好きな食べ物"/>
                 <input type="submit" value="🔍" class="submit-button"/>
+                <li class="error" th:if="${inputError}" >この食品は存在しません！</li>
             </form>
         </div>
 

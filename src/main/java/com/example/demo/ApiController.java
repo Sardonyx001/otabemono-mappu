@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ApiController {
     
+    @Cacheable("foodQueryToCodeMap")
     public List<String> getFoodQueryListAsStringList() throws Exception{
         ApiManager api = new ApiManager();
         URL apiGetMetaInfoUrl = api.makeUrlFromSomeParams(
@@ -28,7 +30,7 @@ public class ApiController {
 
         // JSON型でAPIへのGETリクエストのレスポンスを取得する
         // データセットのメタ情報
-        String jsonMetaDataResponse = api.makeApiRequest(apiGetMetaInfoUrl);
+        String jsonMetaDataResponse = api.makeApiRequest(apiGetMetaInfoUrl).replaceAll("@", "");
         // データセットの実際データ
         ApiDataProcessor apiDataProcessor = new ApiDataProcessor();
 
@@ -53,7 +55,7 @@ public class ApiController {
         try {
             // JSON型でAPIへのGETリクエストのレスポンスを取得する
             // データセットのメタ情報
-            String jsonMetaDataResponse = api.makeApiRequest(apiGetMetaInfoUrl);
+            String jsonMetaDataResponse = api.makeApiRequest(apiGetMetaInfoUrl).replaceAll("@", "");
             // データセットの実際データ
             ApiDataProcessor apiDataProcessor = new ApiDataProcessor();
 
@@ -63,23 +65,28 @@ public class ApiController {
             // Also make the fooQueryToCodeMap data fetching and 
             // processing happen AFTER the user first lands on the home page
             HashMap<String, String> foodQueryToCodeMap = apiDataProcessor.getfoodQueryToCodeMap(jsonMetaDataResponse);
-            String _foodQueryCode = foodQueryToCodeMap.getOrDefault(_foodQuery.replaceAll("[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",""),foodQueryCode);
+            String _foodQueryCode = foodQueryToCodeMap
+                                    .getOrDefault(_foodQuery
+                                                    .replaceAll( //Regex to remove anything but Japanese text for input sanitization
+                                                        "[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",
+                                                        ""),
+                                                    foodQueryCode
+                                                );
             System.out.println("foodCode: {"+_foodQueryCode+"}");
 
             URL apiGetStatDataUrl = api.makeUrl(_foodQueryCode);
             System.out.println(apiGetStatDataUrl.toString());
             
-            String jsonStatDataResponse = api.makeApiRequest(apiGetStatDataUrl);        
+            String jsonStatDataResponse = api.makeApiRequest(apiGetStatDataUrl).replaceAll("@", "");        
             HashMap<String, String> areaNameToDataValueMap = apiDataProcessor.getAreaNameToDataValueMap(jsonStatDataResponse); 
 
             model.addAttribute("jsonData", gson.toJson(areaNameToDataValueMap));
-            model.addAttribute("jsonData2", gson.toJson(foodQueryToCodeMap));
         
         
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "api-result";
+        return "apidata";
     }
 
 }

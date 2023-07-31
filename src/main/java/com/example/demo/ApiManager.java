@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -92,6 +93,7 @@ public class ApiManager {
 		return url;
 	}
 
+	@Cacheable("jsonResponse")
 	public String makeApiRequest(URL url) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
@@ -104,7 +106,7 @@ public class ApiManager {
 				response.append(inputLine);
 			}
 			in.close();
-			return response.toString();
+			return response.toString().replaceAll("@", "");
 		} else {
 			throw new IOException("API request failed with response code: " + responseCode);
 		}

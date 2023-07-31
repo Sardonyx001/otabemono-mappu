@@ -1,11 +1,16 @@
 package com.example.demo;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import lombok.Getter;
 
 
 public class ApiDataProcessor {
@@ -15,51 +20,33 @@ public class ApiDataProcessor {
         double sum;
         int count;
     }
-    public HashMap<String, String> getfoodQueryToCodeMap(String jsonMetaDataResponse) {
+
+    @Getter
+    public String jpTextOnlyRegex = "[^\\u3041-\\u3093\\u30A1-\\u30F4\\u30FC\\u4E00-\\u9FA0]+";
+
+
+    public HashMap<String, String> getfoodQueryToCodeMap(String jsonMetadataResponse) {
 
         HashMap<String,String> foodQueryToCodeMap = new HashMap<String,String>();
         // JSONデータを操作するためオブジェクトへ変換する
-        JsonArray classObjectArray = getMetaDataClassObjectInfoArray(jsonMetaDataResponse);        
+        JsonArray classObjectArray = getMetaDataClassObjectInfoArray(jsonMetadataResponse);        
         
         classObjectArray.forEach((JsonElement _classObject) -> {
             JsonObject classObject = _classObject.getAsJsonObject();
-            if(classObject.get("@id").getAsString().equals("cat01")){
             
+            if(classObject.get("id").getAsString().equals("cat01")){
                 classObject.getAsJsonArray("CLASS")
                 .forEach((JsonElement consumableCodeClass) -> {
-                    // Check if the consumable is in the food range
-                    // TODO Optimize Range Passing and Handle Consumable Category Data Retrieval from API
-                    // There has to be better way to pass the range
-                    // Getting only the food items from the comsumables since 
-                    // the api doesn't specify a specific category for this but 
-                    // returns all the consumable even when using the cdCat01From 
-                    // and cdCat01To range variable to specifiy comsumable category 
-                    // ranges (i.e. consumable item codes aren't ordered even though 
-                    // they appear they are)
-                    if(consumableCodeClass
-                        .getAsJsonObject()
-                        .get("@code")
-                        .getAsString()
-                        .compareTo("010110001") >= 0 
-                        && 
-                        consumableCodeClass
-                        .getAsJsonObject()
-                        .get("@code")
-                        .getAsString()
-                        .compareTo("011100070") <= 0 ){
+                    if(isComsumableCategoryClassCodeBetween(consumableCodeClass) ){
                             foodQueryToCodeMap.put(
                                 consumableCodeClass
                                     .getAsJsonObject()
-                                    .get("@name")
+                                    .get("name")
                                     .getAsString()
-                                    // TODO Create Reusable Variable for Japanese Word Regex Matching
-                                    // Probably use a variable to store this regex somewhere
-                                    // This regex matches anything that isn't a Japanese word 
-                                    // (It only keeps single Japanese words, no spaces)
-                                    .replaceAll("[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",""),
+                                    .replaceAll(this.jpTextOnlyRegex,""),
                                 consumableCodeClass
                                     .getAsJsonObject()
-                                    .get("@code")
+                                    .get("code")
                                     .getAsString()
                             );  
                     }
@@ -70,9 +57,49 @@ public class ApiDataProcessor {
         return foodQueryToCodeMap;
     }
 
-    private JsonArray getMetaDataClassObjectInfoArray(String jsonMetaData) {
+
+    // Use this getConsumableCategory to write 2 functions for getCategoryNameToCodeMap and getCategoryNameToUnitMap
+    public List<ConsumableCategory> getConsumableCategoryListFromRange(String jsonMetaDataResponse,String start,String end){
+        Gson gson = new Gson();
+        List<ConsumableCategory> consumableCategoryList = new LinkedList<ConsumableCategory>();
+        
+        JsonArray classObjectArray = getMetaDataClassObjectInfoArray(jsonMetaDataResponse);        
+        
+        classObjectArray.forEach((JsonElement _classObject) -> {
+            JsonObject classObject = _classObject.getAsJsonObject();
+            if(classObject.get("id").getAsString().equals("cat01")){
+                classObject.getAsJsonArray("CLASS")
+                .forEach((JsonElement consumableCategoryClass) -> {
+                    ConsumableCategory consumableCategory = gson.fromJson(consumableCategoryClass.getAsJsonObject(),ConsumableCategory.class);
+                    System.out.println(consumableCategory.toString());
+                    if(consumableCategory.isCodeBetween(start, end)){
+                        consumableCategoryList.add(consumableCategory);
+                    }
+                });
+            }
+        });
+
+        return consumableCategoryList;
+    }
+
+                    
+    private boolean isComsumableCategoryClassCodeBetween(JsonElement consumableCategoryClass) {
+        return consumableCategoryClass
+            .getAsJsonObject()
+            .get("code")
+            .getAsString()
+            .compareTo("010110001") >= 0 
+            && 
+            consumableCategoryClass
+            .getAsJsonObject()
+            .get("code")
+            .getAsString()
+            .compareTo("011100070") <= 0;
+    }
+
+    private JsonArray getMetaDataClassObjectInfoArray(String jsonMetadataResponse) {
         JsonArray classObjectInfoArray = JsonParser
-            .parseString(jsonMetaData)
+            .parseString(jsonMetadataResponse)
             .getAsJsonObject()
             .getAsJsonObject("GET_META_INFO")
             .getAsJsonObject("METADATA_INF")
@@ -81,6 +108,7 @@ public class ApiDataProcessor {
         return classObjectInfoArray;
     }
     
+
     public HashMap<String, String> getAreaNameToDataValueMap(String jsonResponse) throws Exception {
         
         HashMap<String, String> areaNameToDataValueMap = new HashMap<String,String>();
@@ -189,7 +217,6 @@ public class ApiDataProcessor {
         return cityToPrefectureMapping;
     }
 
-    // TODO Add exception handling for all of the below methods
     private JsonObject getRootContainer(String jsonResponse) {
         JsonObject responseRootContainer = JsonParser
             .parseString(jsonResponse)
@@ -208,18 +235,19 @@ public class ApiDataProcessor {
     private JsonArray getAreaClassInfoFrom(JsonArray classObjectInfoContainer) {
         JsonArray areaClassInfoContainer = new JsonArray();
         for(JsonElement classInfoObject: classObjectInfoContainer){
-            if(classInfoObject.getAsJsonObject().get("@id").getAsString().equals("area")){
+            if(classInfoObject.getAsJsonObject().get("id").getAsString().equals("area")){
                 areaClassInfoContainer = classInfoObject.getAsJsonObject().getAsJsonArray("CLASS");    
             }
         }
         return areaClassInfoContainer;
     }
 
-    private HashMap<String, String> makeCityNameToDataValueMap(HashMap<String, String> areaCodeToNamesMap,
+    private HashMap<String, String> makeCityNameToDataValueMap(
+            HashMap<String, String> areaCodeToNamesMap,
             JsonArray statDataValueContainer) {
         HashMap<String,String> cityNameToDataValueMap = new HashMap<String,String>();
         for(JsonElement value: statDataValueContainer){
-            String regionCode = value.getAsJsonObject().get("@area").getAsString();
+            String regionCode = value.getAsJsonObject().get("area").getAsString();
             cityNameToDataValueMap.put(
                 areaCodeToNamesMap.get(regionCode),
                 value.getAsJsonObject().get("$").getAsString());
@@ -241,11 +269,11 @@ public class ApiDataProcessor {
             areaCodeToNamesMap.put(
                 areaClassInfo
                     .getAsJsonObject()
-                    .get("@code")
+                    .get("code")
                     .getAsString(),
                 areaClassInfo
                     .getAsJsonObject()
-                    .get("@name")
+                    .get("name")
                     .getAsString()
                     .replaceAll("[0-9 ]", ""));
         }

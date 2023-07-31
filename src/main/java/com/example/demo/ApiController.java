@@ -27,7 +27,6 @@ public class ApiController {
                 api.getAppId(),
                 api.getStatsDataId()
         );
-
         // JSON型でAPIへのGETリクエストのレスポンスを取得する
         // データセットのメタ情報
         String jsonMetaDataResponse = api.makeApiRequest(apiGetMetaInfoUrl).replaceAll("@", "");
@@ -68,20 +67,16 @@ public class ApiController {
             String _foodQueryCode = foodQueryToCodeMap
                                     .getOrDefault(_foodQuery
                                                     .replaceAll( //Regex to remove anything but Japanese text for input sanitization
-                                                        "[^\u3041-\u3093\u30A1-\u30F4\u30FC\u4E00-\u9FA0]+",
+                                                        apiDataProcessor.getJpTextOnlyRegex(),
                                                         ""),
                                                     foodQueryCode
                                                 );
-            System.out.println("foodCode: {"+_foodQueryCode+"}");
-
-            URL apiGetStatDataUrl = api.makeUrl(_foodQueryCode);
-            System.out.println(apiGetStatDataUrl.toString());
             
+            URL apiGetStatDataUrl = api.makeUrl(_foodQueryCode);            
             String jsonStatDataResponse = api.makeApiRequest(apiGetStatDataUrl).replaceAll("@", "");        
             HashMap<String, String> areaNameToDataValueMap = apiDataProcessor.getAreaNameToDataValueMap(jsonStatDataResponse); 
 
             model.addAttribute("jsonData", gson.toJson(areaNameToDataValueMap));
-        
         
         } catch (Exception e) {
             e.printStackTrace();

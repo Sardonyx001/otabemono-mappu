@@ -22,6 +22,9 @@ public class CsvDataAccessObject {
                 "Shift_JIS")
             )) {
             return reader.readAll();
+        } catch(Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 

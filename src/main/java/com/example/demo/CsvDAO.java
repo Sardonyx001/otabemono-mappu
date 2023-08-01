@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.util.ResourceUtils;
 
@@ -13,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CsvDAO {
     public List<String[]> readCsvFile(String filePath) throws IOException, CsvException {
@@ -30,34 +31,49 @@ public class CsvDAO {
     public void writeToCsvFile(String filePath,User user) throws IOException, CsvException {
         try (
             Writer writer =  
-                new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(
-                    ResourceUtils.getFile(filePath),true),
-                    "Shift_JIS"))){
-            List<String> userDataAsCsvLine = Arrays.asList(
-                user.getUUID(),",",
-                user.getFullName(),",",
-                user.getFullNameKatakana(),",",
-                user.getFullNameRomaji(),",",
-                user.getGender(),",",
-                user.getPhone(),",",
-                user.getEmail(),",",
-                user.getPostalCode(),",",
-                user.getAddress(),",",
-                user.getAddressCity(),",",
-                user.getAddressTown(),",",
-                user.getAddressStreet(),",",
-                user.getAddressBuilding(),",",
-                user.getDateOfBirth(),",",
-                user.getBirthPlace(),",",
-                user.getPassword()
-            );
-            System.out.println("user data"+userDataAsCsvLine.toString());
-            writer.append(userDataAsCsvLine.stream().collect(Collectors.joining()));
-            System.out.println("Data has been written.");
+            new OutputStreamWriter(
+            new FileOutputStream(
+                ResourceUtils.getFile(filePath),true),
+                "Shift_JIS")){
+            StatefulBeanToCsv<User> beanWriter = 
+                        new StatefulBeanToCsvBuilder<User>(writer).build();
+            beanWriter.write(user);
         }catch (IOException e) {
             e.printStackTrace();
         }
     }
+    // public void writeToCsvFile(String filePath,User user) throws IOException, CsvException {
+    //     try (
+    //         Writer writer =  
+    //             new BufferedWriter(new OutputStreamWriter(
+    //             new FileOutputStream(
+    //                 ResourceUtils.getFile(filePath),true),
+    //                 "Shift_JIS"))){
+            
+    //         List<String> userDataAsCsvLine = Arrays.asList(
+    //             user.getUUID(),",",
+    //             user.getFullName(),",",
+    //             user.getFullNameKatakana(),",",
+    //             user.getFullNameRomaji(),",",
+    //             user.getGender(),",",
+    //             user.getPhone(),",",
+    //             user.getEmail(),",",
+    //             user.getPostalCode(),",",
+    //             user.getAddress(),",",
+    //             user.getAddressCity(),",",
+    //             user.getAddressTown(),",",
+    //             user.getAddressStreet(),",",
+    //             user.getAddressBuilding(),",",
+    //             user.getDateOfBirth(),",",
+    //             user.getBirthPlace(),",",
+    //             user.getPassword()
+    //         );
+    //         System.out.println("user data"+userDataAsCsvLine.toString());
+    //         writer.append(userDataAsCsvLine.stream().collect(Collectors.joining()));
+    //         System.out.println("Data has been written.");
+    //     }catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
 }

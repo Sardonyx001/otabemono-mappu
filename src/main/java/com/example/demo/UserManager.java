@@ -9,7 +9,7 @@ public class UserManager {
     private final String userDataFilePath = "/Users/jam/Documents/\u5927\u5B66/\u30BD\u30D5\u30C8\u30A6\u30A7\u30A2\u958B\u767A\u6F14\u7FD2\uFF12/demo/src/main/resources/static/userData.csv";
 
     public boolean Authenticate(String usernameToFind, String passwordToFind) throws IOException, CsvException {
-        CsvDAO csvReader = new CsvDAO();
+        CsvDataAccessObject csvReader = new CsvDataAccessObject();
         List<String[]> csvData = csvReader.readCsvFile("classpath:static/userData.csv");
         String[] csvDataHeader = csvData.get(0);
         String usernameLabel = "\u6C0F\u540D\uFF08\u30ED\u30FC\u30DE\u5B57\uFF09"; // 「氏名（ローマ字）」 encoded in SHIFT-JIS
@@ -38,7 +38,7 @@ public class UserManager {
     }
 
     public void saveUser(User user){
-        CsvDAO csvWriter = new CsvDAO();
+        CsvDataAccessObject csvWriter = new CsvDataAccessObject();
         try {
             csvWriter.writeToCsvFile(userDataFilePath, user);
         } catch (Exception e) {

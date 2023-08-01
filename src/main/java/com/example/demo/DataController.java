@@ -12,7 +12,7 @@ import java.util.List;
 public class DataController {
     @GetMapping("/csvdata")
     public String getCsvData(Model model) throws IOException, CsvException {
-        CsvDAO csvReader = new CsvDAO();
+        CsvDataAccessObject csvReader = new CsvDataAccessObject();
         List<String[]> csvData = csvReader.readCsvFile("classpath:static/userData.csv");
         model.addAttribute("csvData", csvData);
         return "data";

@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +23,6 @@ public class LoginController {
         return "login";
     }
 
-
     @PostMapping("/login")
     public String loginSubmit(
         @RequestParam ("username") String username,
@@ -31,10 +30,8 @@ public class LoginController {
         HttpSession session,
         Model model
         ) throws IOException, CsvException {
-        CsvReader csvReader = new CsvReader();
-        List<String[]> csvData = csvReader.readCsvFile("classpath:static/userData.csv");
         UserManager userManager = new UserManager();
-        boolean isAuthenticated = userManager.Authenticate(csvData,username,password);
+        boolean isAuthenticated = userManager.Authenticate(username,password);
         boolean loginError = !isAuthenticated;
         model.addAttribute("loginError",loginError);
         session.setAttribute("username", username);
@@ -62,6 +59,9 @@ public class LoginController {
     public String registerUser(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes,HttpSession session) {
         // Save the user data to the database or perform necessary actions
         // You can access the user data using the user object
+        user.setUUID(UUID.randomUUID().toString());
+        UserManager userManager = new UserManager();
+        userManager.saveUser(user);
         redirectAttributes.addFlashAttribute("user", user);
         session.setAttribute("user",user);
         return "redirect:/signup-success";

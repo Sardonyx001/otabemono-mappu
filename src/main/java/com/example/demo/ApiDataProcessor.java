@@ -75,7 +75,6 @@ public class ApiDataProcessor {
                 classObject.getAsJsonArray("CLASS")
                 .forEach((JsonElement consumableCategoryClass) -> {
                     ConsumableCategory consumableCategory = gson.fromJson(consumableCategoryClass.getAsJsonObject(),ConsumableCategory.class);
-                    System.out.println(consumableCategory.toString());
                     if(consumableCategory.isCodeBetween(start, end)){
                         consumableCategoryList.add(consumableCategory);
                     }

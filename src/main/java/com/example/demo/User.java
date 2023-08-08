@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 @JavaBean
 public class User implements Serializable{
+    // ユーザクラス
     // 連番,
     @CsvBindByName(column="\u9023\u756A") 
     @CsvBindByPosition(position=0)

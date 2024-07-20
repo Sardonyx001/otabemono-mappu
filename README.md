@@ -6,7 +6,10 @@
 
 ## 実行方法
 
-端末で以下のコマンドを入力し、http://localhost:8080　をブラウザで開く：
+端末で以下のコマンドを入力し、`http://localhost:8080`　をブラウザで開く：
+
+```bash
  ./gradlew bootRun
+```
 
 テストユーザのユーザ名やパスワードは`resources/static`の中にある`userData.csv`で設定できる。
